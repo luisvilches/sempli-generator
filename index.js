@@ -35,14 +35,15 @@ function init(){
 };
 
 
-var modelsTemplate = `const mongoose = require('mongoose')
-let Schema = mongoose.Schema;
+var modelsTemplate = `const sempli = require('../sempli')
+let Schema = sempli.schema;
 
 let ${folder} = new Schema({
 	// schema del modelo
 })
 
-module.exports = mongoose.model('${folder}', ${folder})
+sempli.encript(${folder},[]);
+module.exports = sempli.models('${folder}',${folder});
 `
 
 var controllersTemplate = `const sempli = require('../sempli');
