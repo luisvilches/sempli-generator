@@ -1,0 +1,16 @@
+{
+  "name": "sempli-cli",
+  "version": "0.0.6",
+  "description": "Micro framework basado en express para el desarrollo de api rest",
+  "main" : "index.js",
+	"bin" : { "sempli-cli" : "index.js" },
+  "keywords": [],
+  "author": "Luis Vilches <luis@luisvilches.cl> (http://www.luisvilches.cl)",
+  "repository": {
+    "github": "https://github.com/luisvilches/frankify.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "node-cmd": "^2.0.0"
+  }
+}
