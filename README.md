@@ -50,4 +50,4 @@ con esto la libreria pretende hacer mas agil el desarrollo para el programador y
 
 License
 
-Copyright (c) 2017 Luis Vilches. Frankify is licensed under the MIT License
+Copyright (c) 2017 Luis Vilches. Sempli is licensed under the MIT License
