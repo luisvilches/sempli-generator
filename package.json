@@ -1,6 +1,6 @@
 {
-  "name": "sempli-cli",
-  "version": "0.0.6",
+  "name": "sempli",
+  "version": "0.0.1",
   "description": "Micro framework basado en express para el desarrollo de api rest",
   "main" : "index.js",
 	"bin" : { "sempli-cli" : "index.js" },

@@ -1,22 +1,22 @@
 
-Frankify: Es un framework para Node.
+Sempli: Es un micro-framework para Node.
 
-Esta basado en express y orientado al desarrollo agil de Api Rest.
-en esta version esta desarrollado para trabajar con mongodb, pero se esta trabajado para que la siguiente version tenga soporte para multiples motores de bases de datos
+Esta basado en Express y orientado al desarrollo agil de Api Rest.
+esta desarrollado para trabajar con MongoDB.
 
 Instalacion:
 
-Frankify se instala como un modulo de forma global con el comando:
+Sempli se instala como un modulo de forma global con el comando:
 
-$ npm install -g frankify
+$ npm install -g sempli
 
 
-para crear un proyecto con frankify basta con solo correr el comando:
+para crear un proyecto con sempli basta con solo correr el comando:
 
-$ frankify create nombreDelProyecto
+$ sempli init nombreDelProyecto
 
 este comando creara la estructura del proyecto listo para trabajar.
-frankify trae incorporado los modulos mas importantes para comenzar a trabarja en un proyecto node.
+sempli trae incorporado los modulos mas importantes para comenzar a trabarja en un proyecto node.
 
 modulos pre-instalados:
 
@@ -30,13 +30,23 @@ mongoose
 entre otros.
 
 
-Running
+correr nuestro servidor:
 
 dentro del directorio del proyecto correr el comando:
 
 $ npm start
 
-Ahora puede acceder a su servidor apuntando a un navegador la direccion http://localhost:3000.
+si tiene instalado nodemon puede correr el siguiente comando para levantar el servidor.
+
+$ npm run sempli-server
+
+Ahora puede acceder a su servidor apuntando a un navegador la direccion http://localhost:5000.
+
+sempli tambien cuenta con el comando create, el cual creara de forma automatica, un modelo, un controlador y las rutas para dicho controlador.
+
+$ sempli create nombreControlador
+
+con esto la libreria pretende hacer mas agil el desarrollo para el programador y evitar estar haciendo lo mismo varias veces.
 
 License
 

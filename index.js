@@ -3,6 +3,7 @@
 var cmd = require('node-cmd');
 var comand = process.argv.slice(2);
 var folder = process.argv.slice(3);
+var foldeCapitalize = capitalize(String(folder));
 var fs=require('fs');
 
 switch (comand.slice()[0]) {
@@ -11,13 +12,17 @@ switch (comand.slice()[0]) {
         break;
     case "create":
             create();
-        break;  
+        break;   
     default:
         console.log("Comando invalido");
 }
 
 
 // Funciones
+function capitalize(s)
+{
+    return s && s[0].toUpperCase() + s.slice(1);
+}
 
 function init(){
     return cmd.get(
@@ -35,50 +40,142 @@ function init(){
 };
 
 
-var modelsTemplate = `const sempli = require('../sempli')
-let Schema = sempli.schema;
+var modelsTemplate = `const mongoose = require('mongoose')
+let Schema = mongoose.Schema;
 
 let ${folder} = new Schema({
 	// schema del modelo
+    name: String,
+    description: String
 })
 
-sempli.encript(${folder},[]);
-module.exports = sempli.models('${folder}',${folder});
+module.exports = mongoose.model('${folder}',${folder});
 `
 
-var controllersTemplate = `const sempli = require('../sempli');
-const Model = require('.././models/${folder}');
+var controllersTemplate = `const ${foldeCapitalize} = require('.././models/${folder}');
 
 
-exports.find = (req,res,next) => {
-    // escribe tu funcion para buscar los registros
+exports.${folder}Find = (req,res,next) => {
+    // funcion para buscar los registros
+    ${foldeCapitalize}.find((err,response) => {
+        if(err) {
+            res.status(500).json({
+                state: 'error',
+                message: err
+            })
+        }else{
+            res.status(200).json({
+                state: 'success',
+                message: 'Operacion exitosa',
+                data: response
+            })
+        }
+    })
+
 }
-exports.create = (req,res) => {
-	// escribe tu funcion para crear registros
+exports.${folder}FindById = (req,res) => {
+	// funcion para buscar un registros por id
+    ${foldeCapitalize}.findById({_id: req.params.id},(err,response) => {
+        if(err) {
+            res.status(500).json({
+                state: 'error',
+                message: err
+            })
+        }else{
+            res.status(200).json({
+                state: 'success',
+                message: 'Operacion exitosa',
+                data: response
+            })
+        }
+    })
 }
-exports.update = (req,res) => {
-	// escribe tu funcion para actualizar registros
+exports.${folder}Create = (req,res) => {
+	// funcion para crear registros
+    let data = new ${foldeCapitalize}({
+        name: req.body.name,
+        description: req.body.description
+    })
+
+    data.save((err,response) => {
+        if(err) {
+            res.status(500).json({
+                state: 'error',
+                message: err
+            })
+        }else{
+            res.status(200).json({
+                state: 'success',
+                message: 'Operacion exitosa',
+                data: response
+            })
+        }
+    })
 }
-exports.delete = (req,res) => {
+exports.${folder}Update = (req,res) => {
+	// funcion para actualizar registros
+
+    let data = new ${foldeCapitalize}({
+        _id: req.params.id,
+        name: req.body.name,
+        description: req.body.description
+    })
+
+    ${foldeCapitalize}.update({_id:req.params.id},data,(err,response) => {
+        if(err) {
+            res.status(500).json({
+                state: 'error',
+                message: err
+            })
+        }else{
+            res.status(200).json({
+                state: 'success',
+                message: 'Operacion exitosa',
+                data: response
+            })
+        }
+    })
+
+}
+exports.${folder}Delete = (req,res) => {
 	// escribe tu funcion para eliminar registros
+     ${foldeCapitalize}.remove({_id:req.params.id},(err,response) => {
+        if(err) {
+            res.status(500).json({
+                state: 'error',
+                message: err
+            })
+        }else{
+            res.status(200).json({
+                state: 'success',
+                message: 'Operacion exitosa',
+                data: response
+            })
+        }
+    })
 }
-exports.findOne = (req,res) => {
-	// escribe tu funcion para buscar un registros
-}
-exports.findById = (req,res) => {
-	// escribe tu funcion para buscar un registros por id
-}`
+`
 
+var routeTemplate = `
 
+//rutas para ${folder}
+router.get('/${folder}', controller.${folder}.${folder}Find)
+router.get('/${folder}/id/:id', controller.${folder}.${folder}FindById)
+router.post('/${folder}', controller.${folder}.${folder}Create)
+router.put('/${folder}/:id', controller.${folder}.${folder}Update)
+router.delete('/${folder}/:id', controller.${folder}.${folder}Delete)
+
+`
 
 function create(){
-    fs.writeFile(`./.${folder}`,modelsTemplate,function(error){
+    fs.writeFile(`./log`,modelsTemplate,function(error){
         if (error){
             console.log(error);
         }else{
             console.log('Un momento por favor...');
             model();
             controller(); 
+            route();
         }
     });
 }
@@ -103,3 +200,10 @@ function controller(){
     });
 }
 
+function route(){
+    fs.appendFile('./routes/public.js',routeTemplate, function (err) {
+        if (err) throw err;
+        console.log('Rutas creadas');
+    });
+
+}
