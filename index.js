@@ -34,7 +34,7 @@ function init(){
             npm install
         `,
         function(data, err, stderr){
-            if (!err) {console.log(`\n\nproyecto creado con exito! \n\nComandos para iniar el proyecto: \n\n cd ${folder} \n si tiene instalado nodemon puede utilizar: \n npm run sempli \n si no puede usar: \n npm start \n`)} else {console.log('error', err)}
+            if (!err) {console.log(`\n\nproyecto creado con exito! \n\nComandos para iniar el proyecto: \n\n cd ${folder} \n\n si tiene instalado nodemon puede utilizar: \n\n npm run sempli \n\n si no puede usar: \n\n npm start \n\n`)} else {console.log('error', err)}
         }
     );
 };
