@@ -2,8 +2,10 @@
   "name": "sempli",
   "version": "0.0.4",
   "description": "Micro framework basado en express para el desarrollo de api rest",
-  "main" : "index.js",
-	"bin" : { "sempli" : "index.js" },
+  "main": "index.js",
+  "bin": {
+    "sempli": "index.js"
+  },
   "keywords": [],
   "author": "Luis Vilches <luis@luisvilches.cl> (http://www.luisvilches.cl)",
   "repository": {
@@ -11,6 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.3.0",
     "node-cmd": "^2.0.0"
   }
 }

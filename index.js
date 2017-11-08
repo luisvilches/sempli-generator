@@ -1,18 +1,58 @@
 #!/usr/bin/env node
 
-var cmd = require('node-cmd');
-var comand = process.argv.slice(2);
-var folder = process.argv.slice(3);
-var foldeCapitalize = capitalize(String(folder));
-var fs=require('fs');
+const cmd = require('node-cmd');
+const comand = process.argv.slice(2);
+const folder = process.argv.slice(3);
+const foldeCapitalize = capitalize(String(folder));
+const fs=require('fs');
+const chalk = require("chalk");
+const appT = require("./templates/app");
+const confT = require("./templates/conf");
+const routesT = require("./templates/routes");
+const requiresT = require("./templates/requires");
+const mainT = require("./templates/main");
+const path = require("path");
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
 
 switch (comand.slice()[0]) {
-    case "init":
-            init();
+    case "new":
+        project()
         break;
-    case "create":
-            create();
-        break;   
+    case "generate":
+        //create();
+        switch (comand.slice()[1]){
+            case "all":
+                all();
+                break;
+            case "model":
+                model();
+                break;
+            case "controller":
+                controller();
+                break;
+            default:
+                console.log("comando no valido");
+        }
+        break;
+    case "g":
+        switch (comand.slice()[1]){
+            case "all":
+                all()
+                break;
+            case "model":
+                model();
+                break;
+            case "controller":
+                controller();
+                break;
+            default:
+                console.log("comando no valido");
+        }
+        break;
     default:
         console.log("Comando invalido");
 }
@@ -24,186 +64,270 @@ function capitalize(s)
     return s && s[0].toUpperCase() + s.slice(1);
 }
 
-function init(){
-    return cmd.get(
-        `
-            git clone https://github.com/luisvilches/Sempli.git ${folder}
-            cd ${folder}
-            rm -r .git
-            rm README.md
-            npm install
-        `,
-        function(data, err, stderr){
-            if (!err) {console.log(`\n\nproyecto creado con exito! \n\nComandos para iniar el proyecto: \n\n cd ${folder} \n\n si tiene instalado nodemon puede utilizar: \n\n npm run sempli \n\n si no puede usar: \n\n npm start \n\n`)} else {console.log('error', err)}
-        }
-    );
-};
-
-
-var modelsTemplate = `const mongoose = require('mongoose')
-let Schema = mongoose.Schema;
-
-let ${folder} = new Schema({
-	// schema del modelo
-    name: String,
-    description: String
-})
-
-module.exports = mongoose.model('${folder}',${folder});
-`
-
-var controllersTemplate = `const ${foldeCapitalize} = require('.././models/${folder}');
-
-
-exports.${folder}Find = (req,res,next) => {
-    // funcion para buscar los registros
-    ${foldeCapitalize}.find((err,response) => {
-        if(err) {
-            res.status(500).json({
-                state: 'error',
-                message: err
-            })
-        }else{
-            res.status(200).json({
-                state: 'success',
-                message: 'Operacion exitosa',
-                data: response
-            })
-        }
-    })
-
+function project(){
+    fs.mkdir(path.join(path.resolve(),String(folder)), err => {
+        if(err){
+            console.log(err);
+        } else {
+            console.log(chalk.cyan("-> creating project",chalk.magenta(folder)));
+            fs.mkdir(path.join(path.resolve(),String(folder),"controllers"), err => {
+                if(err){
+                    console.log(err);
+                } else {
+                    console.log(chalk.cyan("-> creating folder",chalk.magenta("controllers")));
+                    fs.mkdir(path.join(path.resolve(),String(folder),"models"), err => {
+                        if(err){
+                            console.log(err);
+                        } else {
+                            console.log(chalk.cyan("-> creating folder",chalk.magenta("models")));
+                            fs.mkdir(path.join(path.resolve(),String(folder),"public"), err => {
+                                if(err){
+                                    console.log(err);
+                                } else {
+                                    console.log(chalk.cyan("-> creating folder",chalk.magenta("public")));
+                                    fs.mkdir(path.join(path.resolve(),String(folder),"routes"), err => {
+                                        if(err){
+                                            console.log(err);
+                                        } else {
+                                            console.log(chalk.cyan("-> creating folder",chalk.magenta("routes")));
+                                            fs.writeFile(path.join(path.resolve(),`${folder}/index.js`),appT,function(error){
+                                                if (error)
+                                                    console.log(error);
+                                                else
+                                                    console.log(chalk.cyan('-> create main file =>'),chalk.magenta('/index.js'));
+                                                    fs.writeFile(path.join(path.resolve(),`${folder}/semplice.json`),confT,function(error){
+                                                        if (error)
+                                                            console.log(error);
+                                                        else
+                                                            console.log(chalk.cyan('-> create configurations file =>'),chalk.magenta('/semplice.json'));
+                                                            fs.writeFile(path.join(path.resolve(),`${folder}/routes/routes.js`),routesT,function(error){
+                                                                if (error)
+                                                                    console.log(error);
+                                                                else
+                                                                    console.log(chalk.cyan('-> create routes file =>'),chalk.magenta('/routes/routes.js'));
+                                                                    fs.writeFile(path.join(path.resolve(),`${folder}/controllers/index.js`),requiresT,function(error){
+                                                                        if (error)
+                                                                            console.log(error);
+                                                                        else
+                                                                            console.log(chalk.cyan('-> create controllers require =>'),chalk.magenta('/controllers/index.js'));
+                                                                            fs.writeFile(path.join(path.resolve(),`${folder}/controllers/main.js`),mainT,function(error){
+                                                                                if (error)
+                                                                                console.log(error);
+                                                                            else
+                                                                                console.log(chalk.cyan('-> create controller main =>'),chalk.magenta('/controllers/main.js'));
+                                                                                fs.writeFile(path.join(path.resolve(),`${folder}/models/index.js`),requiresT,function(error){
+                                                                                    if (error)
+                                                                                        console.log(error);
+                                                                                    else
+                                                                                        console.log(chalk.cyan('-> create models require =>'),chalk.magenta('/models/index.js'));
+                                                                                        fs.writeFile(path.join(path.resolve(),`${folder}/package.json`),`{
+"name": "${folder}",
+"version": "0.0.1",
+"description": "description ${folder}",
+"main": "index.js",
+"scripts": {
+    "start": "node index"
+},
+"keywords": ["${folder}"],
+"author": "",
+"license": "ISC",
+"dependencies": {
+    "semplice": "0.0.2"
 }
-exports.${folder}FindById = (req,res) => {
-	// funcion para buscar un registros por id
-    ${foldeCapitalize}.findById({_id: req.params.id},(err,response) => {
-        if(err) {
-            res.status(500).json({
-                state: 'error',
-                message: err
-            })
-        }else{
-            res.status(200).json({
-                state: 'success',
-                message: 'Operacion exitosa',
-                data: response
-            })
-        }
-    })
-}
-exports.${folder}Create = (req,res) => {
-	// funcion para crear registros
-    let data = new ${foldeCapitalize}({
-        name: req.body.name,
-        description: req.body.description
-    })
-
-    data.save((err,response) => {
-        if(err) {
-            res.status(500).json({
-                state: 'error',
-                message: err
-            })
-        }else{
-            res.status(200).json({
-                state: 'success',
-                message: 'Operacion exitosa',
-                data: response
-            })
-        }
-    })
-}
-exports.${folder}Update = (req,res) => {
-	// funcion para actualizar registros
-
-    let data = new ${foldeCapitalize}({
-        _id: req.params.id,
-        name: req.body.name,
-        description: req.body.description
-    })
-
-    ${foldeCapitalize}.update({_id:req.params.id},data,(err,response) => {
-        if(err) {
-            res.status(500).json({
-                state: 'error',
-                message: err
-            })
-        }else{
-            res.status(200).json({
-                state: 'success',
-                message: 'Operacion exitosa',
-                data: response
-            })
-        }
-    })
-
-}
-exports.${folder}Delete = (req,res) => {
-	// escribe tu funcion para eliminar registros
-     ${foldeCapitalize}.remove({_id:req.params.id},(err,response) => {
-        if(err) {
-            res.status(500).json({
-                state: 'error',
-                message: err
-            })
-        }else{
-            res.status(200).json({
-                state: 'success',
-                message: 'Operacion exitosa',
-                data: response
+}`,function(error){
+                                                                                            if (error)
+                                                                                                console.log(error);
+                                                                                            else
+                                                                                                console.log(chalk.cyan('-> create dependencies file =>'),chalk.magenta('/package.json'));
+                                                                                                console.log("\n");
+                                                                                                console.log(chalk.magenta('-> install dependecies'));
+                                                                                                console.log("\n");
+                                                                                                cmd.get(
+                                                                                                    `cd ${folder}
+                                                                                                    npm install`,function(data, err, stderr){
+                                                                                                        if (!err) {
+                                                                                                            console.log(chalk.blue("-> project",folder,',created success'));
+                                                                                                            console.log(chalk.cyan("\n"));
+                                                                                                            console.log(chalk.blue("-> cd",folder,"&& npm start"));
+                                                                                                            console.log(chalk.cyan());    
+                                                                                                        } else {
+                                                                                                            console.log('error', err);
+                                                                                                        }
+                                                                                                    }
+                                                                                                )
+                                                                                        });
+                                                                                });
+                                                                        });
+                                                                    });
+                                                            });
+                                                    });
+                                            });
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
             })
         }
     })
 }
-`
 
-var routeTemplate = `
+function all(){
+    let args = folder;
+    let name = args[1];
+    let model = args.splice(2);
+    var modelSchema = new Object();
+    var ctrlSchema = new Object();
+    var ctrlSchemaUpdate = new Object();
+    let aaa = new Array(model[0]);
+    let bbb = String(aaa).split(",");
 
-//rutas para ${folder}
-router.get('/${folder}', controller.${folder}.${folder}Find)
-router.get('/${folder}/id/:id', controller.${folder}.${folder}FindById)
-router.post('/${folder}', controller.${folder}.${folder}Create)
-router.put('/${folder}/:id', controller.${folder}.${folder}Update)
-router.delete('/${folder}/:id', controller.${folder}.${folder}Delete)
+    bbb.map((i,index) => {
+        let obj = i.split(":");
+        modelSchema[obj[0]] = obj[1];
+        ctrlSchema[obj[0]] = `req.body.${obj[0]}`;
+        ctrlSchemaUpdate[obj[0]] = `req.body.${obj[0]}`;
 
-`
+    });
 
-function create(){
-    fs.writeFile(`./log`,modelsTemplate,function(error){
+    ctrlSchemaUpdate._id = "req.params.id";
+    var tmp = `${JSON.stringify(modelSchema)}`;
+    var tmp2 = `${JSON.stringify(ctrlSchema)}`;
+    var tmp3 = `${JSON.stringify(ctrlSchemaUpdate)}`;
+    var ok = tmp.replaceAll("{","{\n").replaceAll('"',"").replaceAll(",",",\n").replaceAll("\n","\n   ").replaceAll("}","\n}");
+    var ok2 = tmp2.replaceAll("{","{\n").replaceAll('"',"").replaceAll(",",",\n").replaceAll("\n","\n        ").replaceAll("}","\n    }");
+    var ok3 = tmp3.replaceAll("{","{\n").replaceAll('"',"").replaceAll(",",",\n").replaceAll("\n","\n        ").replaceAll("}","\n    }");
+
+    fs.writeFile(path.join(path.resolve(),`controllers/${name}.js`),`const models = require("../models")
+
+exports.find = (req,res) => {
+    models.${name}.find({},(err,response) => {
+        if(err){
+            res.status(500).json({message:err})
+        } else {
+            res.status(200).json({message:"Find success -> " + response,data:response})
+        }
+    })
+}
+
+exports.create = (req,res) => {
+    let ${name} = new models.${name}(${ok2});
+    ${name}.save((err,response => {
+        if(err){
+            res.status(500).json({message:err})
+        } else {
+            res.status(200).json({message:"Create success -> " + response,data:response})
+        }
+    }));
+}
+
+exports.update = (req,res) => {
+    let ${name} = new models.${name}(${ok3});
+
+    models.${name}.update({_id:req.params.id},${name},(err,response => {
+        if(err){
+            res.status(500).json({message:err})
+        } else {
+            res.status(200).json({message:"Update success " + response,data:response})
+        }
+    }));
+}
+
+exports.delete = (req,res) => {
+    models.${name}.remove({_id:req.params.id},(err,response) => {
+        if(err){
+            res.status(500).json({message:err})
+        } else {
+            res.status(200).json({message:"Remove succes -> " + response,data:response})
+        }
+    })
+}`,function(error){
         if (error){
             console.log(error);
         }else{
-            console.log('Un momento por favor...');
-            model();
-            controller(); 
-            route();
+            console.log(chalk.cyan('-> create controller =>'),chalk.magenta(name));
+            fs.writeFile(path.join(path.resolve(),`models/${name}.js`),`const { createModel } = require("semplice");
+
+module.exports = createModel("${name}",${ok});
+            `,function(error){
+                if (error){
+                    console.log(error);
+                }else{
+                    console.log(chalk.cyan('-> create model =>'),chalk.magenta(name));
+                    fs.appendFile(path.join(path.resolve(),`routes/routes.js`), `\n /* Routes for ${name} */ \n
+router.get("/${name}", ctrl.${name}.find);
+router.get("/${name}", ctrl.${name}.find);
+router.post("/${name}", ctrl.${name}.create);
+router.put("/${name}/:id", ctrl.${name}.update);
+router.delete("/${name}/:id", ctrl.${name}.delete);
+                    `, (err) => {
+                        if (err) throw err;
+                        console.log(chalk.cyan('-> append routes =>'),chalk.magenta(name));
+                        setTimeout(() => {
+                            console.log(chalk.cyan('-> succes created controller - models - routes for =>'),chalk.magenta(name));
+                        },1000)
+                      });
+                }
+            });
         }
     });
 }
 
 function model(){
-    fs.writeFile(`./models/${folder}.js`,modelsTemplate,function(error){
+
+    let args = folder;
+    let name = args[1];
+    let model = args.splice(2);
+    var modelSchema = new Object();
+    let aaa = new Array(model[0]);
+    let bbb = String(aaa).split(",");
+
+    bbb.map((i,index) => {
+        let obj = i.split(":");
+        modelSchema[obj[0]] = obj[1];
+    });
+
+    var tmp = `${JSON.stringify(modelSchema)}`;
+    var ok = tmp.replaceAll("{","{\n").replaceAll('"',"").replaceAll(",",",\n").replaceAll("\n","\n   ").replaceAll("}","\n}");
+    
+    fs.writeFile(path.join(path.resolve(),`models/${name}.js`),`const { createModel } = require("semplice");\nmodule.exports = createModel("${name}",${ok});
+    `,function(error){
         if (error){
             console.log(error);
         }else{
-            console.log('Modelo creado con exito!');
+            console.log(chalk.cyan('-> create model =>'),chalk.magenta(name));
         }
     });
-}
+};
 
 function controller(){
-    fs.writeFile(`./controllers/${folder}.js`,controllersTemplate,function(error){
+    let args = folder;
+    let name = args[1];
+    fs.writeFile(path.join(path.resolve(),`controllers/${name}.js`),`const models = require("../models")
+    
+exports.find = (req,res) => {
+    
+}
+
+exports.create = (req,res) => {
+    
+}
+
+exports.update = (req,res) => {
+    
+}
+
+exports.delete = (req,res) => {
+    
+}
+    `,function(error){
         if (error){
             console.log(error);
         }else{
-            console.log('Controlador creado con exito!');
-        }
-    });
+            console.log(chalk.cyan('-> create controller =>'),chalk.magenta(name));
+        };
+    })
 }
 
-function route(){
-    fs.appendFile('./routes/public.js',routeTemplate, function (err) {
-        if (err) throw err;
-        console.log('Rutas creadas');
-    });
-
-}
