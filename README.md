@@ -1,53 +1,63 @@
-
-Sempli: Es un micro-framework para Node.
-
-Esta basado en Express y orientado al desarrollo agil de Api Rest.
-esta desarrollado para trabajar con MongoDB.
-
-Instalacion:
-
-Sempli se instala como un modulo de forma global con el comando:
-
-$ npm install -g sempli
+Semplice is a framework based on expressjs oriented to api restful, semplice allows you to create developments quickly. Semplice incorporates several functionalities and integrated modules to facilitate the developer. Some of the functionalities and modules that are currently integrated:
 
 
-para crear un proyecto con sempli basta con solo correr el comando:
+sending of mails
+sockets < socket.io >
+uploads of files
+authentication by tokens
+GeoSchema
 
-$ sempli init nombreDelProyecto
+among many more.
 
-este comando creara la estructura del proyecto listo para trabajar.
-sempli trae incorporado los modulos mas importantes para comenzar a trabarja en un proyecto node.
+Get Started
 
-modulos pre-instalados:
+Add Semplice as a global dependency.
 
-express
-body-parser
-method-override
-jwt-simple
-moment
-mongoose
-
-entre otros.
+$ sudo npm install -g semplice-cli
 
 
-correr nuestro servidor:
+Usage
 
-dentro del directorio del proyecto correr el comando:
+The sempli generator will take care of, among other things,
+create a new project, generate models and controllers.
 
-$ npm start
+create new project
 
-si tiene instalado nodemon puede correr el siguiente comando para levantar el servidor.
+semplice allows you to create projects quickly and easily
 
-$ npm run sempli-server
+$ semplice new < name-project >
+example: 
+$ semplice new blog
 
-Ahora puede acceder a su servidor apuntando a un navegador la direccion http://localhost:5000.
 
-sempli tambien cuenta con el comando create, el cual creara de forma automatica, un modelo, un controlador y las rutas para dicho controlador.
+generate new controller
 
-$ sempli create nombreControlador
+semplice allows you to create controllers quickly and easily
 
-con esto la libreria pretende hacer mas agil el desarrollo para el programador y evitar estar haciendo lo mismo varias veces.
+$ semplice generate controller < name-controller >
+example: 
+$ semplice generate controller main 
+or 
+$ semplice g controller main
 
-License
 
-Copyright (c) 2017 Luis Vilches. Sempli is licensed under the MIT License
+generate new model
+
+semplice allows you to create models quickly and easily
+
+$ semplice generate model < name-model > < modelSchema >
+example: 
+$ semplice generate model user name:String,age:Number 
+or 
+$ semplice g model user name:String,age:Number
+
+
+generate all
+
+semplice allows you to create a model, its controller and add the basic routes quickly and easily
+
+$ semplice generate model < name-all > < modelSchema >
+example: 
+$ semplice generate all post title:String,content:String 
+or 
+$ semplice g all post title:String,content:String
