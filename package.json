@@ -1,6 +1,6 @@
 {
   "name": "semplice-cli",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Micro framework basado en express para el desarrollo de api rest",
   "main": "index.js",
   "bin": {
