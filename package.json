@@ -1,10 +1,10 @@
 {
-  "name": "sempli",
-  "version": "0.0.4",
+  "name": "semplice-cli",
+  "version": "0.0.3",
   "description": "Micro framework basado en express para el desarrollo de api rest",
   "main": "index.js",
   "bin": {
-    "sempli": "index.js"
+    "semplice": "index.js"
   },
   "keywords": [],
   "author": "Luis Vilches <luis@luisvilches.cl> (http://www.luisvilches.cl)",

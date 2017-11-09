@@ -126,13 +126,14 @@ function project(){
 "description": "description ${folder}",
 "main": "index.js",
 "scripts": {
-    "start": "node index"
+    "start": "sempliceWatch --exec node index.js"
 },
 "keywords": ["${folder}"],
 "author": "",
 "license": "ISC",
 "dependencies": {
-    "semplice": "0.0.2"
+    "semplice": "0.0.2",
+    "semplice-watch": "0.0.2"
 }
 }`,function(error){
                                                                                             if (error)
@@ -200,14 +201,15 @@ function all(){
     var ok2 = tmp2.replaceAll("{","{\n").replaceAll('"',"").replaceAll(",",",\n").replaceAll("\n","\n        ").replaceAll("}","\n    }");
     var ok3 = tmp3.replaceAll("{","{\n").replaceAll('"',"").replaceAll(",",",\n").replaceAll("\n","\n        ").replaceAll("}","\n    }");
 
-    fs.writeFile(path.join(path.resolve(),`controllers/${name}.js`),`const models = require("../models")
+    fs.writeFile(path.join(path.resolve(),`controllers/${name}.js`),`const { io } = require("semplice");
+const models = require("../models");
 
 exports.find = (req,res) => {
     models.${name}.find({},(err,response) => {
         if(err){
-            res.status(500).json({message:err})
+            res.status(500).json({message:err});
         } else {
-            res.status(200).json({message:"Find success -> " + response,data:response})
+            res.status(200).json({message:"Find success -> " + response,data:response});
         }
     })
 }
@@ -216,9 +218,10 @@ exports.create = (req,res) => {
     let ${name} = new models.${name}(${ok2});
     ${name}.save((err,response => {
         if(err){
-            res.status(500).json({message:err})
+            res.status(500).json({message:err});
         } else {
-            res.status(200).json({message:"Create success -> " + response,data:response})
+            res.status(200).json({message:"Create success -> " + response,data:response});
+            io.sockets.emit("update");
         }
     }));
 }
@@ -228,9 +231,10 @@ exports.update = (req,res) => {
 
     models.${name}.update({_id:req.params.id},${name},(err,response => {
         if(err){
-            res.status(500).json({message:err})
+            res.status(500).json({message:err});
         } else {
-            res.status(200).json({message:"Update success " + response,data:response})
+            res.status(200).json({message:"Update success " + response,data:response});
+            io.sockets.emit("update");
         }
     }));
 }
@@ -238,9 +242,10 @@ exports.update = (req,res) => {
 exports.delete = (req,res) => {
     models.${name}.remove({_id:req.params.id},(err,response) => {
         if(err){
-            res.status(500).json({message:err})
+            res.status(500).json({message:err});
         } else {
-            res.status(200).json({message:"Remove succes -> " + response,data:response})
+            res.status(200).json({message:"Remove succes -> " + response,data:response});
+            io.sockets.emit("update");
         }
     })
 }`,function(error){
@@ -305,7 +310,8 @@ function model(){
 function controller(){
     let args = folder;
     let name = args[1];
-    fs.writeFile(path.join(path.resolve(),`controllers/${name}.js`),`const models = require("../models")
+    fs.writeFile(path.join(path.resolve(),`controllers/${name}.js`),`const { io } = require("semplice");
+const models = require("../models")
     
 exports.find = (req,res) => {
     
