@@ -216,14 +216,14 @@ exports.find = (req,res) => {
 
 exports.create = (req,res) => {
     let ${name} = new models.${name}(${ok2});
-    ${name}.save((err,response => {
+    ${name}.save((err,response) => {
         if(err){
             res.status(500).json({message:err});
         } else {
             res.status(200).json({message:"Create success -> " + response,data:response});
             io.sockets.emit("update");
         }
-    }));
+    });
 }
 
 exports.update = (req,res) => {
